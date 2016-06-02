@@ -1,0 +1,8 @@
+Welcome, friend, to ALL OF THE TWEETS!!!<br><br>
+<a href="/tweets/new">Create a new tweet!</a><br><br>
+
+<% @tweets.each do |tweet| %>
+<%= tweet.content + " - " + User.find(tweet.user_id).username %><br>
+<% end %>
+
+<br><a href="/logout">logout</a>
