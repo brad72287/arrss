@@ -61,7 +61,7 @@ class ApplicationController < Sinatra::Base
 	end
 	
 	post "/feeds/manage" do
-		if RSS::Parser.parse(params[:url]).nil?
+		if RSS::Parser.parse(params[:url]).nil? || current_user.feeds.find_by(url: params[:url]) #Validates for RSS and prevents duplicate entries
 			puts "Invalid RSS feed" 
 			redirect '/feeds'
 		end
