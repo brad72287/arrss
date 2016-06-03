@@ -1,4 +1,6 @@
 require './config/environment'
+require 'rss'
+require 'open-uri'
 
 class ApplicationController < Sinatra::Base
 
@@ -10,7 +12,15 @@ class ApplicationController < Sinatra::Base
   end
   
   get "/" do
-		erb :index
+		url = 'http://bits.blogs.nytimes.com/feed/'
+		open(url) do |rss|
+		  feed = RSS::Parser.parse(rss)
+		  puts "#{feed.channel.title}"
+		  feed.items.each do |item|
+		    puts "- #{item.title}"
+		  end
+		end
+		"Hello world."
 	end
 
 	get "/signup" do

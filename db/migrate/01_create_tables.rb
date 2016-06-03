@@ -1,13 +1,12 @@
-class CreateTables < ActiveRecord::Migration
+class CreateUsers < ActiveRecord::Migration
 
  create_table :users do |t|
    t.string :username
-   t.string :email
    t.string :password_digest
  end
  
- create_table :tweets do |t|
-   t.string :content
+ create_table :feeds do |t|
+   t.string :url
    t.references :user
  end
 
