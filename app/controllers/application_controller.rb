@@ -61,13 +61,14 @@ class ApplicationController < Sinatra::Base
 	end
 	
 	post "/feeds/manage" do
-		redirect '/feeds' if params[:url].empty?
+		if RSS::Parser.parse(params[:url]).nil?
+			puts "Invalid RSS feed" 
+			redirect '/feeds'
+		end
 		current_user.feeds << Feed.new(url: params[:url]) 
 		current_user.save
 		redirect '/feeds'
 	end
-
-	#*************TWEETS***************#
 
 	helpers do
 		def logged_in?

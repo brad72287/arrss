@@ -4,7 +4,7 @@
 
 <%= "You have no feeds at the moment. You should add a feed!" if @feeds.empty? %>
 <% @feeds.all.each do |feed| %>
-    <% feed = RSS::Parser.parse(open(feed.url)) %>
+    <% feed = RSS::Parser.parse(feed.url) %>
     <% feed.items.each do |item| %>
         <%= "<a href='#{item.link}'> #{item.title} </a> (#{feed.channel.title} - #{item.pubDate.to_s})" %><br>
     <% end %>
