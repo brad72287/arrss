@@ -12,108 +12,59 @@ class ApplicationController < Sinatra::Base
   end
   
   get "/" do
-		url = 'http://bits.blogs.nytimes.com/feed/'
-		open(url) do |rss|
-		  feed = RSS::Parser.parse(rss)
-		  puts "#{feed.channel.title}"
-		  feed.items.each do |item|
-		    puts "- #{item.title}"
-		  end
-		end
-		erb :index
-	end
+  	redirect "/feeds" if logged_in?
+	erb :index
+  end
 
 	get "/signup" do
-	  redirect "/tweets" if logged_in?
+	  redirect "/feeds" if logged_in?
 		erb :signup
 	end
 
 	post "/signup" do
-      user = User.new(username: params[:username], email: params[:email], password: params[:password])
-      redirect "/signup" if user.username.empty? || user.email.empty?
+      user = User.new(username: params[:username], password: params[:password])
+      redirect "/signup" if user.username.empty?
       if user.save && user.authenticate(params[:password]) &&  
           session[:user_id] = user.id
-          redirect "/tweets"
+          redirect "/feeds"
       else
           redirect "/signup"
       end
   end
-
-
-	get "/login" do
-	  redirect "/tweets" if logged_in?
-		erb :login
-	end
-
+  
 	post "/login" do
 		user = User.find_by(:username => params[:username])
         if user && user.authenticate(params[:password])
             session[:user_id] = user.id
-            redirect "/tweets"
+            redirect "/feeds"
         else
-            redirect "/login"
+            redirect "/"
         end
 	end
 
 	get "/logout" do
 		session.clear
-		redirect "/login"
+		redirect "/"
 	end
 	
-	#*************TWEETS***************#
+	#*************FEEDS***************#
 
-	get "/tweets" do
-	  if logged_in?
-	  	@tweets = Tweet.all
-		  erb :'tweets/index'
-		else
-		  redirect "/login"
-	  end
+	get "/feeds" do
+	  #url = 'http://bits.blogs.nytimes.com/feed/'
+	  @feeds = current_user.feeds #RSS::Parser.parse(open(url))
+	  erb :"feeds/index"
 	end
 	
-	get "/tweets/new" do
-		gtfo
-		erb :"tweets/new"
+	get "/feeds/manage" do
+		@feeds = current_user.feeds
+		erb :"feeds/manage"
 	end
 	
-	get "/users/:slug" do
-		@user = User.find_by_slug(params[:slug])
-		erb :"tweets/show"
-	end
-	
-	get '/tweets/:id/edit' do 
-		gtfo
-		@tweet = Tweet.find(params[:id])
-		erb :'tweets/edit'
-	end
-	
-	post '/tweets/:id/edit' do 
-		redirect "tweets/#{params[:id]}/edit" if params[:content].empty?
-		@tweet = Tweet.find(params[:id])
-		@tweet.content = params[:content]
-		@tweet.save
-		redirect '/tweets'
-	end
-	
-	post '/tweets/:id/delete' do 
-		gtfo
-		redirect '/tweets' if current_user != User.find(Tweet.find(params[:id]).user_id)
-		@tweet = Tweet.find(params[:id])
-		@tweet.destroy
-		redirect '/tweets'
-	end
-	
-	post "/tweets/new" do
-		redirect 'tweets/new' if params[:content].empty?
-		current_user.tweets << Tweet.new(content: params[:content]) 
+	post "/feeds/manage" do
+		redirect '/feeds' if params[:url].empty?
+		current_user.feeds << Feed.new(url: params[:url]) 
 		current_user.save
-		redirect '/tweets'
-	end
-	
-	get "/tweets/:id" do
-		gtfo 
-		@tweet = Tweet.find(params[:id])
-		erb :'tweets/individual'
+		redirect '/feeds'
 	end
 
 	#*************TWEETS***************#

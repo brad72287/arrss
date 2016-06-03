@@ -1,0 +1,13 @@
+<h3>Welcome, <%= current_user.username %>.</h3>
+<a href="/feeds/manage">Manage Feeds</a><br><br>
+
+
+<%= "You have no feeds at the moment. You should add a feed!" if @feeds.empty? %>
+<% @feeds.all.each do |feed| %>
+    <% feed = RSS::Parser.parse(open(feed.url)) %>
+    <% feed.items.each do |item| %>
+        <%= "<a href='#{item.link}'> #{item.title} </a> (#{feed.channel.title} - #{item.pubDate.to_s})" %><br>
+    <% end %>
+<% end %>
+
+<br><a href="/logout">Logout</a>
