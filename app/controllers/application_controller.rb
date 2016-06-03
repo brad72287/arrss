@@ -8,7 +8,7 @@ class ApplicationController < Sinatra::Base
     set :public_folder, 'public'
     set :views, 'app/views'
     enable :sessions
-		set :session_secret, "super_duper_secure"
+    set :session_secret, "super_duper_secure"
   end
   
   get "/" do
@@ -20,7 +20,7 @@ class ApplicationController < Sinatra::Base
 		    puts "- #{item.title}"
 		  end
 		end
-		"Hello world."
+		erb :index
 	end
 
 	get "/signup" do
