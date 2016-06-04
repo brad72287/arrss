@@ -16,29 +16,29 @@ class ApplicationController < Sinatra::Base
 	erb :index
   end
 
-	get "/signup" do
-	  redirect "/feeds" if logged_in?
-		erb :signup
-	end
+  get "/signup" do
+	redirect "/feeds" if logged_in?
+	erb :signup
+  end
 
-	post "/signup" do
-      user = User.new(username: params[:username], password: params[:password])
-      redirect "/signup" if user.username.empty?
-      if user.save && user.authenticate(params[:password]) &&  
-          session[:user_id] = user.id
-          redirect "/feeds"
-      else
-          redirect "/signup"
-      end
+  post "/signup" do
+    user = User.new(username: params[:username], password: params[:password])
+    redirect "/signup?message=You must fill a username!" if user.username.empty?
+    if user.save && user.authenticate(params[:password]) &&  
+        session[:user_id] = user.id
+        	redirect "/feeds"
+    	else
+        	redirect "/signup?message=Something went wrong. Failed to sign up."
+    end
   end
   
 	post "/login" do
-		user = User.find_by(:username => params[:username])
-        if user && user.authenticate(params[:password])
-            session[:user_id] = user.id
+	user = User.find_by(:username => params[:username])
+    if user && user.authenticate(params[:password])
+        session[:user_id] = user.id
             redirect "/feeds"
         else
-            redirect "/"
+            redirect "/?message=Failed to login. Make certain that you have the correct username/password!"
         end
 	end
 
@@ -46,16 +46,15 @@ class ApplicationController < Sinatra::Base
 		session.clear
 		redirect "/"
 	end
-	
-	#*************FEEDS***************#
 
 	get "/feeds" do
-	  #url = 'http://bits.blogs.nytimes.com/feed/'
+	  redirect "/" if !logged_in?
 	  @feeds = current_user.feeds
 	  erb :"feeds/index"
 	end
 	
 	get "/feeds/manage" do
+		redirect "/" if !logged_in?
 		@feeds = current_user.feeds
 		erb :"feeds/manage"
 	end
@@ -85,5 +84,4 @@ class ApplicationController < Sinatra::Base
 		end
 	end
   
-
 end
