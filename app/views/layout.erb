@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>RSS Reader</title>
+	<title>Simple RSS Reader</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
 <body>
-	<h1>RSS Reader</h1>
-	<%= yield %>
+	<div class="container">
+	<div class="jumbotron">
+		<h1>Simple RSS Reader</h1>
+		<p>This is an RSS reader made with Sinatra.</p>
+	</div>
+	<div>
+		<%= yield %>
+	</div>
 </body>
 </html>

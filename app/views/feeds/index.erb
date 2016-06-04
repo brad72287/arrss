@@ -1,17 +1,22 @@
-<h3>Welcome, <%= current_user.username %>.</h3>
 
-<ul>
+
+<nav class="navbar navbar-default">
+<ul class="nav navbar-nav">
 <li><a href="/feeds/manage">Top Stories</a></li>
 <li><a href="/feeds/manage">Manage Feeds</a></li>
 <li><a href="/logout">Log Out</a></li>
 </ul>
+</nav>
+
+<h3>Hello, <%= current_user.username %>. Here are your top stories.</h3>
 
 <%= "You have no feeds at the moment. You should add a feed!" if @feeds.empty? %>
-<ul>
+<ul class="list-group">
 <% @feeds.all.each do |feed| %>
     <% feed = RSS::Parser.parse(feed.url) %>
     <% feed.items.each do |item| %>
-        <li><%= "<a href='#{item.link}'> #{item.title} </a> (#{feed.channel.title} - #{item.pubDate.to_s})" %></li>
+        <li class="list-group-item"><%= "<a href='#{item.link}'> #{item.title} </a> 
+        <span class='badge'>#{feed.channel.title} - #{item.pubDate.to_s}</span>" %></li>
     <% end %>
 <% end %>
 </ul>
