@@ -50,7 +50,6 @@ class ApplicationController < Sinatra::Base
 	#*************FEEDS***************#
 
 	get "/feeds" do
-	  #@message = params[:message] if params.has_key?(:message) 
 	  #url = 'http://bits.blogs.nytimes.com/feed/'
 	  @feeds = current_user.feeds
 	  erb :"feeds/index"
@@ -63,7 +62,6 @@ class ApplicationController < Sinatra::Base
 	
 	post "/feeds/manage" do
 		if RSS::Parser.parse(params[:url]).nil?
-			puts "Invalid RSS feed" 
 			redirect '/feeds/manage?message=The RSS feed is not valid.'
 		end
 		current_user.feeds << Feed.new(url: params[:url]) 

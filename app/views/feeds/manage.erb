@@ -1,8 +1,8 @@
 
 <nav class="navbar navbar-default">
 <ul class="nav navbar-nav">
-<li><a href="/feeds/manage">Top Stories</a></li>
-<li><a href="/feeds/manage">Manage Feeds</a></li>
+<li><a href="/feeds">Top Stories</a></li>
+<li><a href="/feeds/manage">Manage Feeds (<%= current_user.feeds.count %>)</a></li>
 <li><a href="/logout">Log Out</a></li>
 </ul>
 </nav>
@@ -10,23 +10,26 @@
 
 <h3>Manage Feeds</h3>
 
-<div class="alert alert-info">
-  <%= params[:message] %>
-</div>
 
-<div>
+
 You have <%= @feeds.all.count %> feed(s).<br>
+<ul class="list-group">
 <% @feeds.all.each do |feed| %>
+	<li class="list-group-item">
     <form method="POST" action="/feeds/<%= feed.id %>/delete">
-	- <%= feed.url %>	<input type="submit" value="Delete">
+	<input type="submit" value="Delete"> <%= feed.url %>	
 	</form>
-<% end %></p>
-</div>
+	</li>
+<% end %>
+</ul>
 
 <div class="well">
 <form action="/feeds/manage" method="POST">
 	<input type="text" name="url">
 	<input type="submit" value="Add Feed">
+	<div class="text-info">
+ 	 <%= params[:message] %>
+	</div>
 </form>
 </div>
 
