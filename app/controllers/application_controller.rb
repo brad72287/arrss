@@ -61,7 +61,7 @@ class ApplicationController < Sinatra::Base
 	end
 	
 	post "/feeds/manage" do
-		if RSS::Parser.parse(params[:url]).nil? || current_user.feeds.find_by(url: params[:url]) #Validates for RSS and prevents duplicate entries
+		if RSS::Parser.parse(params[:url]).nil?
 			puts "Invalid RSS feed" 
 			redirect '/feeds'
 		end
@@ -69,6 +69,12 @@ class ApplicationController < Sinatra::Base
 		current_user.save
 		redirect '/feeds'
 	end
+	
+	post "/feeds/:id/delete" do
+		@feed = current_user.feeds.find(params[:id])
+		@feed.destroy
+		redirect '/feeds'
+	end 
 
 	helpers do
 		def logged_in?
@@ -77,10 +83,6 @@ class ApplicationController < Sinatra::Base
 
 		def current_user
 			User.find(session[:user_id])
-		end
-		
-		def gtfo
-			redirect '/login' if !logged_in?
 		end
 	end
   
