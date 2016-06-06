@@ -1,9 +1,9 @@
 class FeedController < ApplicationController
 
 	get "/feeds" do
-	  redirect "/" if !logged_in?
-	  @feeds = current_user.feeds
-	  erb :"feeds/index"
+		redirect "/" if !logged_in?
+		@feeds = current_user.feeds
+		erb :"feeds/index"
 	end
 	
 	get "/feeds/manage" do
