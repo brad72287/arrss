@@ -3,6 +3,7 @@ class FeedController < ApplicationController
 	get "/feeds" do
 		redirect "/" if !logged_in?
 		@feeds = current_user.feeds
+		@top_stories = current_user.sort_feeds[0..10]
 		erb :"feeds/index"
 	end
 	
@@ -24,7 +25,7 @@ class FeedController < ApplicationController
 	post "/feeds/:id/delete" do
 		@feed = current_user.feeds.find(params[:id])
 		@feed.destroy
-		redirect '/feeds'
+		redirect '/feeds/manage'
 	end 
 
 end

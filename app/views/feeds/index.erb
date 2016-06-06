@@ -13,7 +13,7 @@
 <%= "You have no feeds at the moment. You should add a feed!" if @feeds.empty? %>
 
 <ul class="list-group">
-<% current_user.sort_feeds[0..10].each do |item| %>
+<% @top_stories.each do |item| %>
         <li class="list-group-item">
         <%= "<h3><a href='#{item[:link]}'> #{item[:title]} </a><h3>" %>
         <%= "<h5>#{item[:channel]} - #{item[:date].to_s}</h5>" %>
